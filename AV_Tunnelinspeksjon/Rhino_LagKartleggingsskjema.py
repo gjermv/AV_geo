@@ -9,10 +9,6 @@ import scriptcontext as sc
 import math
 import System
 
-# import locale
-# locale.setlocale(locale.LC_ALL, 'nb_NO')
-
-# import pandas as pd
 import openpyxl
 import os
 
