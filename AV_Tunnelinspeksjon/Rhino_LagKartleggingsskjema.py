@@ -14,7 +14,7 @@ import os
 
 def tegneforklaring():
     tf = dict()
-    tf['Berg (F)'] = ' '
+    tf['Berg (F)'] = 'X_Bold'
     tf['F1'] = 'Nedfall d<0.3m'
     tf['F2'] = 'Nedfall d>0.3m'
     tf['F3'] = 'Avløste blokker'
@@ -23,7 +23,7 @@ def tegneforklaring():
     tf['F6'] = 'Utpressing'
     tf['F7'] = 'Vanninntrengning'
     tf['F8'] = 'Iskjøving'
-    tf['Sprøytebetong (S)'] = ' '
+    tf['Sprøytebetong (S)'] = 'X_Bold'
     tf['S1'] = 'Nedfall'
     tf['S2'] = 'Riss'
     tf['S3'] = 'Sprekker'
@@ -33,21 +33,21 @@ def tegneforklaring():
     tf['S7'] = 'Vanninntrengning'
     tf['S8'] = 'Iskjøving'
     tf['S9'] = 'Nedbrytning (vannkjemi, bakterier)'
-    tf['Bolter til bergsikring (B)'] = ' '
+    tf['Bolter til bergsikring (B)'] = 'X_Bold'
     tf['B1A-E'] = 'Korrosjon, Rustgrad A-E'
     tf['B2'] = 'Vrakbolt'
     tf['B3'] = 'Utpressing'
     tf['B4'] = 'Deformasjon'
-    tf['Øvrige skader/mangler (M)'] = ' '
+    tf['Øvrige skader/mangler (M)'] = 'X_Bold'
     tf['M1'] = 'Manglende / ikke utført bergsikring'
     tf['M2'] = 'Mangler ved utført bergsikring'
     tf['M3'] = 'Manglende vedlikeholdsrensk'
     tf['M4'] = 'Skader på vann-/ frostsikringshvelv'
-    tf['Framkommelighet'] = ' '
+    tf['Framkommelighet'] = 'X_Bold'
     tf['X'] = ' Stengt'
     tf['I/X'] = 'Trangt'
     tf[' '] = ' '
-    tf['Anbefalte tiltak'] = ' '
+    tf['Anbefalte tiltak'] = 'X_Bold'
     tf['Re'] = 'Rensk'
     tf['B'] = 'Bolt'
     tf['FB'] = 'Fjellbånd'
@@ -135,14 +135,14 @@ def CreateLegend():
 
     for i, key in enumerate(legend):
         rs.AddLine((0, 0 - (i * radHoyde)), (tabellBredde, 0 - (i * radHoyde)))
-        if legend[key] == ' ':
-            rs.AddText(key, (tabA, -0.85 - (i * radHoyde)), skriftStr, font_style=1)
-            rs.AddText(legend[key], (tabB, -0.85 - (i * radHoyde)), skriftStr)
+        if legend[key] == 'X_Bold':
+            rs.AddText(key, (tabA, -0.85 - (i * radHoyde)), height=skriftStr, font=None, font_style=1)
         else:
             rs.AddText(key, (tabA, -0.85 - (i * radHoyde)), skriftStr)
             rs.AddText(legend[key], (tabB, -0.85 - (i * radHoyde)), skriftStr)
-    rs.AddLine((0, -tabellHoyde), (tabellBredde, -tabellHoyde))
-
+    
+    rs.AddLine((0, -tabellHoyde), (tabellBredde, -tabellHoyde))  
+    rs.AddLine((0, -tabellHoyde-radHoyde*2), (tabellBredde, -tabellHoyde-radHoyde))   
     rs.AddLine((0, 0), (tabellBredde, 0))
     rs.AddLine((0, 0), (0, -tabellHoyde))
     rs.AddLine((tabellBredde, 0), (tabellBredde, -tabellHoyde))
