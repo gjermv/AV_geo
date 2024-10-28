@@ -36,14 +36,13 @@ def excel_import(excel):
             pel = float(row['Pel'])
             pos = row['Pos']
 
-            try:
-                if pos > -100 or pos < 100:
-                    pos = float(pos) * vl_max / 100
-            except:
-                print('Pos er ikke innenfor kartleggingsskjema, symbol lagt til origo')
-                pos = 0.0
-                pel = 0.0
-
+            
+            if pos > -100 or pos < 100:
+                pos = float(pos) * vl_max / 100
+            else: 
+                print('Pos > 100 eller <-100:', pos)
+                pos = vl_max + 10
+                
             if row['Symbol'] in berg:
                 rs.CurrentLayer('Berg')
                 rs.AddText(row['Symbol'], (pos, pel), height=2, justification=2)
@@ -75,7 +74,7 @@ def excel_import(excel):
                 rs.AddText(row['Kommentar'], (pos, pel - 2), height=1.5, justification=2)
 
         except:
-            print("Error:", row['Pel'], row['Kommentar'])
+            print("Feilmelding - Ugyldig verdi: ", row['Pel'], row['Kommentar'])
 
 
 if __name__ == "__main__":
