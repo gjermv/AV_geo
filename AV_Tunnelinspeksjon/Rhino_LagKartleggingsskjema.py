@@ -63,6 +63,7 @@ def dwgLag():
         'Manglende utført bergsikring': (43, 23, 200),
         'Forsagere': (0, 182, 25),
         'Berg_skadereg': (0, 255, 0),
+        'Plasser manuelt': (0,0,0),
         'Fremkommelighet': (21, 25, 34),
         'Legend': (0, 0, 0)
     }
@@ -135,8 +136,12 @@ def CreateLegend():
     for i, key in enumerate(legend):
         print(key, i)
         rs.AddLine((0, 0 - (i * radHoyde)), (tabellBredde, 0 - (i * radHoyde)))
-        rs.AddText(key, (tabA, -0.85 - (i * radHoyde)), skriftStr)
-        rs.AddText(legend[key], (tabB, -0.85 - (i * radHoyde)), skriftStr)
+        if key == 'Berg (F)' or 'Sprøytebetong (S)' or 'Bolter til bergsikring (B)' or 'Øvrige skader/mangler (M)' or 'Framkommelighet' or 'Anbefalte tiltak':
+            rs.AddText(key, (tabA, -0.85 - (i * radHoyde)), skriftStr, font=1)
+            rs.AddText(legend[key], (tabB, -0.85 - (i * radHoyde)), skriftStr)
+        else:
+            rs.AddText(key, (tabA, -0.85 - (i * radHoyde)), skriftStr)
+            rs.AddText(legend[key], (tabB, -0.85 - (i * radHoyde)), skriftStr)
     rs.AddLine((0, tabellHoyde+radHoyde), (tabellBredde, tabellHoyde+radHoyde))  
     rs.AddLine((0, tabellHoyde+radHoyde*2), (tabellBredde, tabellHoyde+radHoyde))   
 
@@ -172,39 +177,14 @@ def symboler(tunnelStart, tunnelStop):
         rs.AddText('F3', (-95, i * 200),2)
         rs.AddText('F7', (-90, i * 200),2)
 
+        rs.CurrentLayer('Vann-og frostsikring_skadereg')
+        rs.AddText('S7', (-95, -10+(i * 200)), 2)
+        rs.AddText('F7', (-90, -10+(i * 200)), 2)
+
         rs.CurrentLayer('Fremkommelighet')
         rs.AddText('1/X', (-100, -5+(i * 200)),2)
         rs.AddText('X', (-90, -5+(i * 200)),2)
 
-def excel_import(excel):
-
-    if os.path.isfile(excel):
-        df_obs = pd.read_excel(excel, header=0)
-
-        print(df_obs['Kommentar'])
-        T_scale = 200
-        vl_max = 110 / 500 * T_scale
-
-    for index, row in df_obs.iterrows():
-
-            try:
-                pel = float(row['Pel'])
-                pos = row['Pos']
-
-                try:
-                    if pos > -100 or pos < 100:
-                        pos = float(pos) * vl_max / 100
-                except:
-                    print('Pos er ikke innenfor kartleggingsskjema, symbol lagt til origo')
-                    pos = 0.0
-                    pel = 0.0
-
-
-                rs.AddText(row['Symbol'],(pos,pel), height=1.5, justification=2)
-                rs.AddText(row['Kommentar'],(pos,pel-2), height=1.5, justification=2)
-
-            except:
-                print("Error:", row['Pel'], row['Kommentar'])
 
 
 if __name__=="__main__":
@@ -233,7 +213,6 @@ if __name__=="__main__":
     tunnelNavn = rs.GetString('Tunnelnavn',)
     tunnelStart = rs.GetInteger('Tunnel start')
     tunnelStop = rs.GetInteger('Tunnel slutt')
-    # excel = rs.GetString('PATH til Excel-fil')
 
     if tunnelStart >= tunnelStop:
         print("Startnummer må være mindre enn sluttnummer")
@@ -244,7 +223,6 @@ if __name__=="__main__":
     CreateLegend()
     lagTunnellinjer(tunnelStart, tunnelStop)
     symboler(tunnelStart, tunnelStop)
-    # excel_import(excel)
 
 
     idefOverskrift = sc.doc.InstanceDefinitions.Find('Blokk_Overskrift')
