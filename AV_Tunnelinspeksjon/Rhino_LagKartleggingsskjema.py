@@ -14,7 +14,7 @@ import os
 
 def tegneforklaring():
     tf = dict()
-    tf['Berg (F)'] = '_'
+    tf['Berg (F)'] = ' '
     tf['F1'] = 'Nedfall d<0.3m'
     tf['F2'] = 'Nedfall d>0.3m'
     tf['F3'] = 'Avløste blokker'
@@ -59,12 +59,12 @@ def tegneforklaring():
 
 def dwgLag():
     lag = {
-        'Vann-og frostsikring_skadereg': (255, 0, 0),
-        'Manglende utført bergsikring': (43, 23, 200),
-        'Forsagere': (0, 182, 25),
-        'Berg_skadereg': (0, 255, 0),
-        'Plasser manuelt': (0,0,0),
-        'Fremkommelighet': (21, 25, 34),
+        'Vann-og frostsikring_skadereg': (0, 0, 255),
+        'Manglende utført bergsikring': (0, 0, 0),
+        'Forsagere': (255, 0, 0),
+        'Berg_skadereg': (255, 0, 0),
+        'Plasser manuelt': (0,255,0),
+        'Fremkommelighet': (0, 0, 0),
         'Legend': (0, 0, 0)
     }
 
@@ -90,20 +90,20 @@ def lagTunnellinjer(start, stop):
 def CreateOverskift(tunnelNavn):
 
     tabellBredde = 180
-    tabellHoyde = 8
+    tabellHoyde = 10
     linjeA = 80
     linjeB = 110
     textBuffer = 1
     
 
     rs.CurrentLayer('Default')
-    rs.AddText('Vedlegg 1 - Kartleggingsskjema', (textBuffer, 13), 3)
+    rs.AddText('Vedlegg 1 - Kartleggingsskjema', (textBuffer, 14.5), 3)
 
-    rs.AddText('Tunnel (og løp)', (textBuffer, 7.5), 1.5) 
-    rs.AddText('Dato', (linjeA+textBuffer, 7.5), 1.5) 
-    rs.AddText('Registert av', (linjeB+textBuffer, 7.5), 1.5) 
+    rs.AddText('Tunnel (og løp):', (textBuffer, 7.5), 1.5)
+    rs.AddText('Dato:', (linjeA+textBuffer, 7.5), 1.5)
+    rs.AddText('Registert av:', (linjeB+textBuffer, 7.5), 1.5)
     
-    rs.AddText(tunnelNavn, (textBuffer, 4), 3)
+    rs.AddText(tunnelNavn, (textBuffer, 5), 3)
 
     rs.AddLine((0, tabellHoyde), (tabellBredde, tabellHoyde))
     rs.AddLine((0, 0), (tabellBredde, 0))
@@ -127,34 +127,32 @@ def CreateLegend():
     rs.CurrentLayer('Legend')
     legend = tegneforklaring()
     radHoyde = 4
-    tabellBredde = 65
+    tabellBredde = 75
     tabellHoyde = (len(legend)) * radHoyde
     skriftStr = 2
     tabA = 2
     tabB = 12
 
     for i, key in enumerate(legend):
-        print(key, i)
         rs.AddLine((0, 0 - (i * radHoyde)), (tabellBredde, 0 - (i * radHoyde)))
-        if key == 'Berg (F)' or 'Sprøytebetong (S)' or 'Bolter til bergsikring (B)' or 'Øvrige skader/mangler (M)' or 'Framkommelighet' or 'Anbefalte tiltak':
-            rs.AddText(key, (tabA, -0.85 - (i * radHoyde)), skriftStr, font=1)
+        if legend[key] == ' ':
+            rs.AddText(key, (tabA, -0.85 - (i * radHoyde)), skriftStr, font_style=1)
             rs.AddText(legend[key], (tabB, -0.85 - (i * radHoyde)), skriftStr)
         else:
             rs.AddText(key, (tabA, -0.85 - (i * radHoyde)), skriftStr)
             rs.AddText(legend[key], (tabB, -0.85 - (i * radHoyde)), skriftStr)
-    rs.AddLine((0, tabellHoyde+radHoyde), (tabellBredde, tabellHoyde+radHoyde))  
-    rs.AddLine((0, tabellHoyde+radHoyde*2), (tabellBredde, tabellHoyde+radHoyde))   
+    rs.AddLine((0, -tabellHoyde), (tabellBredde, -tabellHoyde))
 
     rs.AddLine((0, 0), (tabellBredde, 0))
     rs.AddLine((0, 0), (0, -tabellHoyde))
     rs.AddLine((tabellBredde, 0), (tabellBredde, -tabellHoyde))
 
-    rs.AddText('Kommentarer:', (tabA, -170), 2)
-    rs.AddLine((0, -168), (tabellBredde, -168))
-    rs.AddLine((0, -174), (tabellBredde, -174))
-    rs.AddLine((0, -266), (tabellBredde, -266))
-    rs.AddLine((0, -168), (0, -266))
-    rs.AddLine((tabellBredde, -168), (tabellBredde, -266))
+    rs.AddText('Kommentarer:', (tabA, -168), 2, font_style=1)
+    rs.AddLine((0, -166), (tabellBredde, -166))
+    rs.AddLine((0, -172), (tabellBredde, -172))
+    rs.AddLine((0, -274.8), (tabellBredde, -274.8))
+    rs.AddLine((0, -166), (0, -274.8))
+    rs.AddLine((tabellBredde, -166), (tabellBredde, -274.8))
 
     objrefs2 = sc.doc.Objects.FindByLayer('Legend')
     base_point = Rhino.Geometry.Point3d(0, 0, 0)
@@ -173,17 +171,17 @@ def add_layers(layers_dict):
 def symboler(tunnelStart, tunnelStop):
     for i in range(((tunnelStop-tunnelStart)//200)+1):
         rs.CurrentLayer('Berg_skadereg')
-        rs.AddText('F1', (-100, i * 200),2)
-        rs.AddText('F3', (-95, i * 200),2)
-        rs.AddText('F7', (-90, i * 200),2)
+        rs.AddText('F1', (-102, tunnelStart+(i * 200)),3)
+        rs.AddText('F3', (-95, tunnelStart+(i * 200)),3)
+        rs.AddText('F4', (-88, tunnelStart+(i * 200)),3)
 
         rs.CurrentLayer('Vann-og frostsikring_skadereg')
-        rs.AddText('S7', (-95, -10+(i * 200)), 2)
-        rs.AddText('F7', (-90, -10+(i * 200)), 2)
+        rs.AddText('S7', (-95, tunnelStart+(-7+(i * 200))), 3)
+        rs.AddText('F7', (-88, tunnelStart+(-7+(i * 200))), 3)
 
         rs.CurrentLayer('Fremkommelighet')
-        rs.AddText('1/X', (-100, -5+(i * 200)),2)
-        rs.AddText('X', (-90, -5+(i * 200)),2)
+        rs.AddText('1/X', (-102, tunnelStart+(-12+(i * 200))),3)
+        rs.AddText('X', (-88, tunnelStart+(-12+(i * 200))),3)
 
 
 
@@ -196,7 +194,7 @@ if __name__=="__main__":
     origin = Rhino.Geometry.Point3d.Origin
     normal = Rhino.Geometry.Vector3d.ZAxis
 
-    direction = Rhino.Geometry.Vector3d(15, 255, 0)
+    direction = Rhino.Geometry.Vector3d(15,263,0)
     radians = Rhino.RhinoMath.ToRadians(0)
 
     t = Rhino.Geometry.Transform.Translation(direction)
@@ -204,13 +202,13 @@ if __name__=="__main__":
     r = Rhino.Geometry.Transform.Rotation(radians, normal, origin)
     xform = t * s * r
 
-    direction = Rhino.Geometry.Vector3d(135, 245, 0)
+    direction = Rhino.Geometry.Vector3d(135, 255, 0)
     t2 = Rhino.Geometry.Transform.Translation(direction)
     r2 = Rhino.Geometry.Transform.Rotation(radians, normal, origin)
     s2 = Rhino.Geometry.Transform.Scale(origin, 0.8)
     xform2 = t2 * s2 * r2
 
-    tunnelNavn = rs.GetString('Tunnelnavn',)
+    tunnelNavn = rs.GetString('Tunnelnavn')
     tunnelStart = rs.GetInteger('Tunnel start')
     tunnelStop = rs.GetInteger('Tunnel slutt')
 
