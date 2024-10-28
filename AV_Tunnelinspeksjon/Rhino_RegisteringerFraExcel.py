@@ -8,7 +8,6 @@ import math
 import System
 
 import locale
-
 locale.setlocale(locale.LC_ALL, 'nb_NO')
 
 import pandas as pd
@@ -36,46 +35,31 @@ def excel_import(excel):
 
     for index, row in df_obs.iterrows():
 
-        try:
+        try: 
             pel = float(row['Pel'])
-            pos = row['Pos']
+            pos = float(row['Pos'])
 
-            
             if pos > -100 or pos < 100:
                 pos = float(pos) * vl_max / 100
             else: 
                 print('Pos > 100 eller <-100:', pos)
                 pos = -vl_max - 60
-                
+
             if row['Symbol'] in berg:
                 rs.CurrentLayer('Berg_skadereg')
-                rs.AddText(row['Symbol'], (pos, pel), height=skriftStrSym, justification=2)
-                rs.AddText(row['Kommentar'], (pos, pel - 3), height=skriftStrKom, justification=2)
-
             elif row['Symbol'] in vann:
                 rs.CurrentLayer('Vann-og frostsikring_skadereg')
-                rs.AddText(row['Symbol'], (pos, pel), height=skriftStrSym, justification=2)
-                rs.AddText(row['Kommentar'], (pos, pel - 3), height=skriftStrKom, justification=2)
-
             elif row['Symbol'] in bolt:
                 rs.CurrentLayer('Bolt')
-                rs.AddText(row['Symbol'], (pos, pel), height=skriftStrSym, justification=2)
-                rs.AddText(row['Kommentar'], (pos, pel - 3), height=skriftStrKom, justification=2)
-
             elif row['Symbol'] in mangler:
                 rs.CurrentLayer('Manglende utført bergsikring')
-                rs.AddText(row['Symbol'], (pos, pel), height=skriftStrSym, justification=2)
-                rs.AddText(row['Kommentar'], (pos, pel - 3), height=skriftStrKom, justification=2)
-
             elif row['Symbol'] in fremkom:
                 rs.CurrentLayer('Fremkommlighet')
-                rs.AddText(row['Symbol'], (pos, pel), height=skriftStrSym, justification=2)
-                rs.AddText(row['Kommentar'], (pos, pel - 3), height=skriftStrKom, justification=2)
-
             else:
                 rs.CurrentLayer('Plasser manuelt')
-                rs.AddText(row['Symbol'], (pos, pel), height=skriftStrSym, justification=2)
-                rs.AddText(row['Kommentar'], (pos, pel - 3), height=skriftStrKom, justification=2)
+
+            rs.AddText(row['Symbol'], (pos, pel), height=skriftStrSym, font=None, font_style=0, justification=2)
+            rs.AddText(row['Kommentar'], (pos, pel - 3), height=skriftStrKom, font=None, font_style=0, justification=2)
 
         except:
             print("Feilmelding - Ugyldig verdi: ", row['Pel'], row['Kommentar'])
@@ -85,6 +69,6 @@ if __name__ == "__main__":
     excel = rs.GetString('Lim inn full sti til Excel-fil')
     excel_import(excel)
     rs.CurrentLayer("Default")
-    view = rs.CurrentView('TOP')
+    view = rs.CurrentView('Top')
     rs.IsViewMaximized(view)
     rs.ZoomExtents()
