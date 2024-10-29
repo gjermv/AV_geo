@@ -6,6 +6,7 @@ import rhinoscriptsyntax as rs
 import scriptcontext as sc
 import math
 import System
+import System.Windows.Forms as forms
 
 import locale
 locale.setlocale(locale.LC_ALL, 'nb_NO')
@@ -80,12 +81,23 @@ def excel_import(excel):
         except:
             print("Feilmelding - Ugyldig verdi: ", row['Pel'], row['Kommentar'])
 
+def get_file():
+    dialog = forms.OpenFileDialog()
+    dialog.Filter = "Excel Files (*.xlsx)|*.xlsx"
+    dialog.Title = "Velg Excel-fil"
 
+    if dialog.ShowDialog() == forms.DialogResult.OK:
+        return dialog.FileName
+    return None
 
 
 if __name__ == "__main__":
-    excel = rs.GetString('PATH til Excel-fil')
-    excel_import(excel)
+    excel = get_file()
+    if os.path.isfile(excel):
+        excel_import(excel)
+    else:
+        print('Filen finnes ikke')
+
     rs.CurrentLayer("Default")
     view = rs.CurrentView('Top')
     rs.IsViewMaximized(view)
