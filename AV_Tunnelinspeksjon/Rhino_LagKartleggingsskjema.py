@@ -9,7 +9,6 @@ import scriptcontext as sc
 import math
 import System
 
-import openpyxl
 import os
 
 def tegneforklaring():
@@ -239,11 +238,6 @@ def hentTunnelinfo():
         tunnelStart, tunnelStop = tunnelStop, tunnelStart
 
     return [tunnelNavn, tunnelStart, tunnelStop]
-        
-
-
-    
-
 
 if __name__=="__main__":
     slettEksisterendeBlokker()
@@ -271,14 +265,16 @@ if __name__=="__main__":
         layout_name = f"{int(layout_y_start)}-{int(layout_y_end)}"
         newLayout = rs.AddLayout(layout_name, (210,297))
         
-        # Sett inn blokker med overskrift og tegneforklaring. 
-        sc.doc.Objects.AddInstanceObject(idefOverskrift.Index, xform2DLayout(15,263))
+        # Sett inn blokker med overskrift og tegneforklaring
+        rs.CurrentLayer('Legend')
         sc.doc.Objects.AddInstanceObject(idefLegend.Index, xform2DLayout(135, 255))
-
+        rs.CurrentLayer('Default')
+        sc.doc.Objects.AddInstanceObject(idefOverskrift.Index, xform2DLayout(15,263))
+        
         # Sett inn detaljvindu og zoom til riktig plass. 
         detailGUID = rs.AddDetail(newLayout, (15, 35), (130, 255), 'Plan')
 
-        pMin = rs.CreatePoint((0, layout_y_start + 100, 0))
+        pMin = rs.CreatePoint((-5, layout_y_start + 100, 0))
 
         detail = rs.coercerhinoobject(detailGUID)
         detailGeometry = detail.DetailGeometry
@@ -290,7 +286,7 @@ if __name__=="__main__":
         unit1 = Rhino.UnitSystem(4)
         unit2 = Rhino.UnitSystem(2)
 
-        detailGeometry.SetScale(1, unit1, 1, unit2)
+        detailGeometry.SetScale(0.96, unit1, 1, unit2)
         detail.CommitChanges()
         detail.CommitViewportChanges()
 
