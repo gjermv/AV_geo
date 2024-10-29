@@ -92,5 +92,3 @@ if __name__ == '__main__':
         BildemappeTilExcel(bilde_mappe)
     else:
         print('Filområdet finnes ikke')
-
-     #'C:\\Users\\niklas.brede\\OneDrive - Asplan Viak\\Documents\\Prosjekter\\Oslofjordtunnelen Hovedinspeksjon 2024\\Bilder\\Alle\\*.JPG'
