@@ -27,7 +27,7 @@ def tegneforklaring():
     tf['S1'] = 'Nedfall'
     tf['S2'] = 'Riss'
     tf['S3'] = 'Sprekker'
-    tf['S4'] = ['Bom']
+    tf['S4'] = 'Bom'
     tf['S5'] = 'Avskalling'
     tf['S6'] = 'Utpressing'
     tf['S7'] = 'Vanninntrengning'
@@ -59,13 +59,15 @@ def tegneforklaring():
 
 def dwgLag():
     lag = {
-        'Vann-og frostsikring_skadereg': (0, 0, 255),
-        'Manglende utført bergsikring': (0, 0, 0),
-        'Forsagere': (255, 0, 0),
+        'Legend': (0, 0, 0),
         'Berg_skadereg': (255, 0, 0),
-        'Plasser manuelt': (0,255,0),
+        'Vann-og frostsikring_skadereg': (0, 0, 255),
+        'Kommentar': (0, 0, 0),
+        'Forsagere': (255, 0, 0),
         'Fremkommelighet': (0, 0, 0),
-        'Legend': (0, 0, 0)
+        'Manglende utført bergsikring': (0, 0, 0),
+        'Bolt': (0, 0, 0),
+        'Plasser manuelt': (0,255,0),
     }
 
     return lag
@@ -169,20 +171,36 @@ def add_layers(layers_dict):
         rs.AddLayer(layer_name, color)
 
 def symboler(tunnelStart, tunnelStop):
-    for i in range(((tunnelStop-tunnelStart)//200)+1):
-        rs.CurrentLayer('Berg_skadereg')
-        rs.AddText('F1', (-102, tunnelStart+(i * 200)),3)
-        rs.AddText('F3', (-95, tunnelStart+(i * 200)),3)
-        rs.AddText('F4', (-88, tunnelStart+(i * 200)),3)
+    berg = ["F1", "F2", "F4", "F5", "F6", "S1", "S4", "S5", "S6"]
+    vann = ["S7", "S3", "F7", "F8", "S2", "S8", "S9", "F9"]
+    bolt = ['B1', 'B2', 'B3', 'B4', 'B1A', 'B1B', 'B1C', 'B1D', 'B1E']
+    mangler = ['M1', 'M2', 'M3', 'M4', 'M5']
+    fremkom = ["I/X", "X", "L", "D"]
 
-        rs.CurrentLayer('Vann-og frostsikring_skadereg')
-        rs.AddText('S7', (-95, tunnelStart+(-7+(i * 200))), 3)
-        rs.AddText('F7', (-88, tunnelStart+(-7+(i * 200))), 3)
 
-        rs.CurrentLayer('Fremkommelighet')
-        rs.AddText('1/X', (-102, tunnelStart+(-12+(i * 200))),3)
-        rs.AddText('X', (-88, tunnelStart+(-12+(i * 200))),3)
+    rs.CurrentLayer('Berg_skadereg')
+    for j in range(len(berg)):
+        rs.AddText(berg[j], (-88-(j*9), tunnelStart),3)
 
+    rs.CurrentLayer('Vann-og frostsikring_skadereg')
+    for h in range(len(vann)):
+        rs.AddText((vann[h]), (-88-(h*9), tunnelStart-7), 3)
+
+    rs.CurrentLayer('Bolt')
+    for k in range(len(bolt)):
+        rs.AddText(bolt[k], (-88-(k*14), tunnelStart-14), 3)
+
+    rs.CurrentLayer('Manglende utført bergsikring')
+    for p in range(len(mangler)):
+        rs.AddText(mangler[p], (-88-(p*9.2), tunnelStart-21), 3)
+
+    rs.CurrentLayer('Fremkommelighet')
+    for t in range(len(fremkom)):
+        rs.AddText(fremkom[t], (-88-(t*8), tunnelStart+-28),3)
+
+    rs.CurrentLayer('Forsagere')
+    rs.AddText('!!!', (-88, tunnelStart-35),3)
+    rs.AddCircle((-85.25, tunnelStart+(-37.2)),3.7)
 
 
 if __name__=="__main__":

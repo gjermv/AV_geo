@@ -45,36 +45,44 @@ def excel_import(excel):
                 
             if row['Symbol'] in berg:
                 rs.CurrentLayer('Berg_skadereg')
-                rs.AddText(row['Symbol'], (pos, pel), height=2, justification=2)
+                rs.AddText(row['Symbol'], (pos, pel), height=3, justification=2)
+                rs.CurrentLayer('Kommentar')
                 rs.AddText(row['Kommentar'], (pos, pel - 3), height=2, justification=2)
 
             elif row['Symbol'] in vann:
                 rs.CurrentLayer('Vann-og frostsikring_skadereg')
-                rs.AddText(row['Symbol'], (pos, pel), height=2, justification=2)
+                rs.AddText(row['Symbol'], (pos, pel), height=3, justification=2)
+                rs.CurrentLayer('Kommentar')
                 rs.AddText(row['Kommentar'], (pos, pel - 3), height=2, justification=2)
 
             elif row['Symbol'] in bolt:
                 rs.CurrentLayer('Bolt')
-                rs.AddText(row['Symbol'], (pos, pel), height=2, justification=2)
+                rs.AddText(row['Symbol'], (pos, pel), height=3, justification=2)
+                rs.CurrentLayer('Kommentar')
                 rs.AddText(row['Kommentar'], (pos, pel - 3), height=2, justification=2)
 
             elif row['Symbol'] in mangler:
                 rs.CurrentLayer('Manglende utført bergsikring')
-                rs.AddText(row['Symbol'], (pos, pel), height=2, justification=2)
+                rs.AddText(row['Symbol'], (pos, pel), height=3, justification=2)
+                rs.CurrentLayer('Kommentar')
                 rs.AddText(row['Kommentar'], (pos, pel - 3), height=2, justification=2)
 
             elif row['Symbol'] in fremkom:
                 rs.CurrentLayer('Fremkommlighet')
-                rs.AddText(row['Symbol'], (pos, pel), height=2, justification=2)
+                rs.AddText(row['Symbol'], (pos, pel), height=3, justification=2)
+                rs.CurrentLayer('Kommentar')
                 rs.AddText(row['Kommentar'], (pos, pel - 3), height=2, justification=2)
 
             else:
                 rs.CurrentLayer('Plasser manuelt')
                 rs.AddText(row['Symbol'], (pos, pel), height=2, justification=2)
-                rs.AddText(row['Kommentar'], (pos, pel - 3), height=2, justification=2)
+                rs.CurrentLayer('Kommentar')
+                rs.AddText(row['Kommentar'], (pos, pel - 3), height=1.5, justification=2)
 
         except:
             print("Feilmelding - Ugyldig verdi: ", row['Pel'], row['Kommentar'])
+
+
 
 
 if __name__ == "__main__":
