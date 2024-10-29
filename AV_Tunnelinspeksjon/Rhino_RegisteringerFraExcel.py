@@ -6,6 +6,7 @@ import rhinoscriptsyntax as rs
 import scriptcontext as sc
 import math
 import System
+import System.Windows.Forms as forms
 
 import locale
 locale.setlocale(locale.LC_ALL, 'nb_NO')
