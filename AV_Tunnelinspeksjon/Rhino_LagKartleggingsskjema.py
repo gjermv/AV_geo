@@ -75,14 +75,20 @@ def lagTunnellinjer(start, stop):
     rs.CurrentLayer("Kartleggingsskjema")
 
     T_scale = 200
-    vl_max = 110/500*T_scale 
-    vl_mid = 50/500*T_scale 
-    hPos = [-vl_max,-vl_mid, 0, vl_mid, vl_max]  
+    vl_max = 110/ 500 *T_scale 
+    vl_mid = 50/ 500 *T_scale 
+    hPos = [-vl_max, -vl_mid, 0, vl_mid, vl_max]  
     
     for h in hPos:
-        rs.AddLine((h,start),(h,stop+20))
+        rs.AddLine((h, start),(h, stop))
 
-    for v in range(start, stop+30, 20):
+    rs.AddLine((-vl_max, start), (vl_max, start))
+    rs.AddLine((-vl_max, stop), (vl_max, stop))
+    rs.AddText(str(start),(-vl_max-5, start), 2, font=None, font_style=0, justification=131072+4)
+    rs.AddText(str(stop),(-vl_max-5, stop), 2, font=None, font_style=0, justification=131072+4)
+    
+    vLineStart = int(((start // 20) + 1) * 20)
+    for v in range(vLineStart, stop, 20):
         rs.AddLine((-vl_max,v),(vl_max,v))
         rs.AddText(str(v),(-vl_max-5,v), 2, font=None, font_style=0, justification=131072+4)
 
@@ -99,9 +105,9 @@ def CreateOverskift(tunnelNavn):
     rs.CurrentLayer('Default')
     rs.AddText('Vedlegg 1 - Kartleggingsskjema', (textBuffer, 14.5), 3)
 
-    rs.AddText('Tunnel (og løp):', (textBuffer, 7.5), 1.5)
-    rs.AddText('Dato:', (linjeA+textBuffer, 7.5), 1.5)
-    rs.AddText('Registert av:', (linjeB+textBuffer, 7.5), 1.5)
+    rs.AddText('Tunnel (og løp):', (textBuffer, 8.5), 1.5)
+    rs.AddText('Dato:', (linjeA+textBuffer, 8.5), 1.5)
+    rs.AddText('Registert av:', (linjeB+textBuffer, 8.5), 1.5)
     
     rs.AddText(tunnelNavn, (textBuffer, 5), 3)
 
@@ -119,7 +125,7 @@ def CreateOverskift(tunnelNavn):
     geometry = [item.Geometry for item in objrefs]
     attributes = [item.Attributes for item in objrefs]
 
-    idef_index = sc.doc.InstanceDefinitions.Add(idef_name, "", base_point, geometry, attributes)
+    sc.doc.InstanceDefinitions.Add(idef_name, "", base_point, geometry, attributes)
     rs.DeleteObjects(objrefs)
 
 
@@ -127,7 +133,7 @@ def CreateLegend():
     rs.CurrentLayer('Legend')
     legend = tegneforklaring()
     radHoyde = 4
-    tabellBredde = 75
+    tabellBredde = 60
     tabellHoyde = (len(legend)) * radHoyde
     skriftStr = 2
     tabA = 2
@@ -140,19 +146,19 @@ def CreateLegend():
         else:
             rs.AddText(key, (tabA, -0.85 - (i * radHoyde)), skriftStr)
             rs.AddText(legend[key], (tabB, -0.85 - (i * radHoyde)), skriftStr)
-    
-    rs.AddLine((0, -tabellHoyde), (tabellBredde, -tabellHoyde))  
-    rs.AddLine((0, -tabellHoyde-radHoyde*2), (tabellBredde, -tabellHoyde-radHoyde))   
+
+    rs.AddLine((0, -tabellHoyde), (tabellBredde, -tabellHoyde))
+
     rs.AddLine((0, 0), (tabellBredde, 0))
     rs.AddLine((0, 0), (0, -tabellHoyde))
     rs.AddLine((tabellBredde, 0), (tabellBredde, -tabellHoyde))
 
-    rs.AddText('Kommentarer:', (tabA, -168), 2, font_style=1)
+    rs.AddText('Kommentarer:', (tabA, -167.5), 2, font_style=1)
     rs.AddLine((0, -166), (tabellBredde, -166))
-    rs.AddLine((0, -172), (tabellBredde, -172))
-    rs.AddLine((0, -274.8), (tabellBredde, -274.8))
-    rs.AddLine((0, -166), (0, -274.8))
-    rs.AddLine((tabellBredde, -166), (tabellBredde, -274.8))
+    rs.AddLine((0, -171), (tabellBredde, -171))
+    rs.AddLine((0, -171-49), (tabellBredde, -171-49))
+    rs.AddLine((0, -166), (0, -171-49))
+    rs.AddLine((tabellBredde, -166), (tabellBredde, -171-49))
 
     objrefs2 = sc.doc.Objects.FindByLayer('Legend')
     base_point = Rhino.Geometry.Point3d(0, 0, 0)
@@ -161,40 +167,35 @@ def CreateLegend():
     geometry2 = [item.Geometry for item in objrefs2]
     attributes2 = [item.Attributes for item in objrefs2]
 
-    idef_index = sc.doc.InstanceDefinitions.Add(idef_name2, "", base_point, geometry2, attributes2)
+    sc.doc.InstanceDefinitions.Add(idef_name2, "", base_point, geometry2, attributes2)
     rs.DeleteObjects(objrefs2)
 
-def add_layers(layers_dict):
+
+def opprettLag(layers_dict):
     for layer_name, color in layers_dict.items():
         rs.AddLayer(layer_name, color)
+
 
 def symboler(tunnelStart, tunnelStop):
     for i in range(((tunnelStop-tunnelStart)//200)+1):
         rs.CurrentLayer('Berg_skadereg')
-        rs.AddText('F1', (-102, tunnelStart+(i * 200)),3)
-        rs.AddText('F3', (-95, tunnelStart+(i * 200)),3)
-        rs.AddText('F4', (-88, tunnelStart+(i * 200)),3)
+        rs.AddText('F1', (-102, tunnelStart+(i * 200)), 3)
+        rs.AddText('F3', (-95, tunnelStart+(i * 200)), 3)
+        rs.AddText('F4', (-88, tunnelStart+(i * 200)), 3)
 
         rs.CurrentLayer('Vann-og frostsikring_skadereg')
-        rs.AddText('S7', (-95, tunnelStart+(-7+(i * 200))), 3)
+        rs.AddText('S7', (-95, tunnelStart + (-7+(i * 200))), 3)
         rs.AddText('F7', (-88, tunnelStart+(-7+(i * 200))), 3)
 
         rs.CurrentLayer('Fremkommelighet')
-        rs.AddText('1/X', (-102, tunnelStart+(-12+(i * 200))),3)
-        rs.AddText('X', (-88, tunnelStart+(-12+(i * 200))),3)
+        rs.AddText('1/X', (-102, tunnelStart+(-12+(i * 200))), 3)
+        rs.AddText('X', (-88, tunnelStart+(-12+(i * 200))), 3)
 
-
-
-if __name__=="__main__":
-    if rs.IsBlock('Blokk_Overskrift'):
-        rs.DeleteBlock('Blokk_Overskrift')
-    if rs.IsBlock('Blokk_Legend'):
-        rs.DeleteBlock('Blokk_Legend')
-
+def xform2DLayout(x, y): 
     origin = Rhino.Geometry.Point3d.Origin
     normal = Rhino.Geometry.Vector3d.ZAxis
 
-    direction = Rhino.Geometry.Vector3d(15,263,0)
+    direction = Rhino.Geometry.Vector3d(x, y, 0)
     radians = Rhino.RhinoMath.ToRadians(0)
 
     t = Rhino.Geometry.Transform.Translation(direction)
@@ -202,21 +203,35 @@ if __name__=="__main__":
     r = Rhino.Geometry.Transform.Rotation(radians, normal, origin)
     xform = t * s * r
 
-    direction = Rhino.Geometry.Vector3d(135, 255, 0)
-    t2 = Rhino.Geometry.Transform.Translation(direction)
-    r2 = Rhino.Geometry.Transform.Rotation(radians, normal, origin)
-    s2 = Rhino.Geometry.Transform.Scale(origin, 0.8)
-    xform2 = t2 * s2 * r2
+    return xform
 
+def slettEksisterendeBlokker():
+    if rs.IsBlock('Blokk_Overskrift'):
+        rs.DeleteBlock('Blokk_Overskrift')
+    if rs.IsBlock('Blokk_Legend'):
+        rs.DeleteBlock('Blokk_Legend')
+
+def hentTunnelinfo():
     tunnelNavn = rs.GetString('Tunnelnavn')
     tunnelStart = rs.GetInteger('Tunnel start')
     tunnelStop = rs.GetInteger('Tunnel slutt')
 
     if tunnelStart >= tunnelStop:
-        print("Startnummer må være mindre enn sluttnummer")
+        tunnelStart, tunnelStop = tunnelStop, tunnelStart
+
+    return [tunnelNavn, tunnelStart, tunnelStop]
+        
 
 
-    add_layers(dwgLag())
+    
+
+
+if __name__=="__main__":
+    slettEksisterendeBlokker()
+
+    tunnelNavn, tunnelStart, tunnelStop = hentTunnelinfo()
+
+    opprettLag(dwgLag())
     CreateOverskift(tunnelNavn)
     CreateLegend()
     lagTunnellinjer(tunnelStart, tunnelStop)
@@ -224,7 +239,6 @@ if __name__=="__main__":
 
 
     idefOverskrift = sc.doc.InstanceDefinitions.Find('Blokk_Overskrift')
-    rs.CurrentLayer('Legend')
     idefLegend = sc.doc.InstanceDefinitions.Find('Blokk_Legend')
 
 
@@ -239,25 +253,25 @@ if __name__=="__main__":
         newLayout = rs.AddLayout(layout_name, (210,297))
         
         # Sett inn blokker med overskrift og tegneforklaring. 
-        sc.doc.Objects.AddInstanceObject(idefOverskrift.Index, xform)
-        sc.doc.Objects.AddInstanceObject(idefLegend.Index, xform2)
+        sc.doc.Objects.AddInstanceObject(idefOverskrift.Index, xform2DLayout(15,263))
+        sc.doc.Objects.AddInstanceObject(idefLegend.Index, xform2DLayout(135, 255))
 
         # Sett inn detaljvindu og zoom til riktig plass. 
         detailGUID = rs.AddDetail(newLayout, (15, 35), (130, 255), 'Plan')
 
-        pMin = rs.CreatePoint((0, layout_y_start+100, 0))
+        pMin = rs.CreatePoint((0, layout_y_start + 100, 0))
 
         detail = rs.coercerhinoobject(detailGUID)
         detailGeometry = detail.DetailGeometry
         detailViewPort = detail.Viewport
         detailView = detailViewPort.ParentView
         detailViewPort.SetCameraTarget(pMin, True)
-        detailViewPort.Magnify(50,False)
+        detailViewPort.Magnify(50, False)
 
         unit1 = Rhino.UnitSystem(4)
         unit2 = Rhino.UnitSystem(2)
 
-        detailGeometry.SetScale(1,unit1,1,unit2)
+        detailGeometry.SetScale(1, unit1, 1, unit2)
         detail.CommitChanges()
         detail.CommitViewportChanges()
 
