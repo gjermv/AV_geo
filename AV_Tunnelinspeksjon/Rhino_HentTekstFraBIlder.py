@@ -75,7 +75,7 @@ def BildemappeTilExcel(bilde_mappe):
 
 def get_directory():
     dialog = forms.FolderBrowserDialog()
-    dialog.Description = "Select a directory"
+    dialog.Description = "Velg mappen med bilder"
     dialog.ShowNewFolderButton = True
 
     if dialog.ShowDialog() == forms.DialogResult.OK:
