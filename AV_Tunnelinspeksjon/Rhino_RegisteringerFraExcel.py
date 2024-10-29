@@ -8,7 +8,6 @@ import math
 import System
 
 import locale
-
 locale.setlocale(locale.LC_ALL, 'nb_NO')
 
 import pandas as pd
@@ -32,11 +31,10 @@ def excel_import(excel):
 
     for index, row in df_obs.iterrows():
 
-        try:
+        try: 
             pel = float(row['Pel'])
-            pos = row['Pos']
+            pos = float(row['Pos'])
 
-            
             if pos > -100 or pos < 100:
                 pos = float(pos) * vl_max / 100
             else: 
@@ -89,6 +87,6 @@ if __name__ == "__main__":
     excel = rs.GetString('PATH til Excel-fil')
     excel_import(excel)
     rs.CurrentLayer("Default")
-    view = rs.CurrentView('TOP')
+    view = rs.CurrentView('Top')
     rs.IsViewMaximized(view)
     rs.ZoomExtents()
