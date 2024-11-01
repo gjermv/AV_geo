@@ -230,7 +230,7 @@ def slettEksisterendeBlokker():
         rs.DeleteBlock('Blokk_Legend')
 
 def hentTunnelinfo():
-    tunnelNavn = rs.GetString('Tunnelnavn')
+    tunnelNavn = test_get_literal_string('Tunnelnavn')
     tunnelStart = rs.GetInteger('Tunnel start')
     tunnelStop = rs.GetInteger('Tunnel slutt')
 
@@ -238,6 +238,15 @@ def hentTunnelinfo():
         tunnelStart, tunnelStop = tunnelStop, tunnelStart
 
     return [tunnelNavn, tunnelStart, tunnelStop]
+
+def test_get_literal_string(prompt):
+    gs = Rhino.Input.Custom.GetString()
+    gs.SetCommandPrompt(prompt)
+    result = gs.GetLiteralString()
+
+    if (result == Rhino.Input.GetResult.String):
+        return gs.StringResult().strip()
+    return None
 
 if __name__=="__main__":
     slettEksisterendeBlokker()
